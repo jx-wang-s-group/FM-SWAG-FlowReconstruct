@@ -1,0 +1,40 @@
+device: "cuda"
+
+data:
+  y: # Wall normal location and mean/std of y
+  y_m_path: "/path/to/mean.npy"
+  y_std_path: "/path/to/std.npy"
+
+fm:
+    checkpoint_path: "/path/to/checkpoint.pth"
+    # Model Architecture
+    dim: [3, 320, 200]
+    channel_mult: "1, 2, 4, 4"
+    num_channels: 128
+    res_blocks: 2
+    head_chans: 64
+    attn_res: "40"
+    dropout: 0.0
+    new_attn: True
+    film: True
+    class_cond: True
+    num_classes: 3
+
+ode:
+    method: "dopri5"
+    num_steps: 2
+    rtol: 1e-5
+    atol: 1e-5
+    options: {}
+
+gen: 
+    n_samples: 1
+    batch_size: 1
+    save_path: "/path/to/save/samples.npy"
+    
+    # Default/Optional arguments
+    # use_heavy_noise: False
+    # all_traj: False
+    # t_start: 0.0
+    # t_end: 1.0
+    # y0_provided: False

@@ -1,0 +1,16 @@
+name : fm-swag
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pytorch
+  - numpy
+  - tqdm
+  - omegaconf
+  - pip
+  - pip:
+    - torchdyn
+    - torchdiffeq
+    - tensorboard

@@ -1,0 +1,41 @@
+device: cuda
+exp_num: ""
+path: "/path/to/save/exps"
+th_seed:
+np_seed:
+
+unet: # UNet model parameters used in this study
+  dim: [3, 320, 200]
+  channel_mult: "1,  2,  4,  4"
+  num_channels: 128
+  res_blocks: 2
+  head_chans: 64
+  attn_res: "40"
+  dropout: 0.0
+  new_attn: True
+  film: True
+  class_cond: True
+  num_classes: 3
+
+FM:
+  sigma: 1e-3
+  return_noise: False
+  add_heavy_noise: False
+  nu: null
+
+dataloader:
+  datapath: [[/path/to/u_at_y1, /path/to/v_at_y1, /path/to/w_at_y1],
+             [/path/to/u_at_y2, /path/to/v_at_y2, /path/to/w_at_y2],
+             [/path/to/u_at_y3, /path/to/v_at_y3, /path/to/w_at_y3]] # list of list of paths, each inner list contains the paths to the u, v, w components of the velocity field at a wall normal location
+  batch_size: 10
+  dataset: VF_FM
+
+optimizer:
+  lr: 1e-4
+
+num_epochs: 10 # one epoch of training was enough to achieve good results
+print_epoch_int: 1
+save_epoch_int: 1
+print_with_epoch_int: 10
+restart: False
+restart_epoch:

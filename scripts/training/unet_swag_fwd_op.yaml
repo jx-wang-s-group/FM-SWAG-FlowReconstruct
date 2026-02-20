@@ -1,0 +1,50 @@
+device: cuda
+exp_num: 
+path: "/path/to/save/exps"
+th_seed:
+np_seed:
+
+unet: # UNet model parameters
+  dim: [3, 32, 32]
+  out_dim: 3
+  num_channels: 64
+  channel_mult: null
+  res_blocks: 2
+  head_chans: 64
+  attn_res: "64"
+  dropout: 0.0
+  new_attn: True
+  film: True
+
+swag: # SWAG parameters
+  variance_clamp : 1e-6
+  max_rank : 5
+  swag_start : 4
+  swag_epoch_int : 5
+  swag_eval_rounds : 10
+
+dataloader:
+  wm_paths: [["/path/to/wall_pressure_data",
+            "/path/to/wall_dudy_data",
+            "/path/to/wall_dwdy_data"]]
+  vf_paths: [["/path/to/u_data",
+            "/path/to/v_data",
+            "/path/to/w_data"]]
+
+  batch_size: 512
+  time_cutoff: 36000
+  patch_dims : [32, 32]
+  dataset: WMVF_P
+  jump: 4
+  cutoff: null
+  scale_inputs: False
+  
+optimizer:
+  lr: 1e-3 # Higher learning rate for exploration of the parameter space
+
+num_epochs: 100
+print_epoch_int: 1
+save_epoch_int: 5
+print_with_epoch_int: 10
+restart: False
+restart_epoch:

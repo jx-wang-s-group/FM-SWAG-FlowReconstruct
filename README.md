@@ -19,7 +19,7 @@ To set up the environment, follow these steps:
 
 2.  **Activate the environment:**
     ```bash
-    conda activate fm-swag-flowreconstruct
+    conda activate fm-swag
     ```
 
 3.  **Configure Environment Variables:**

@@ -1,0 +1,57 @@
+experimental : False
+device : "cuda"
+parallel_flag: False
+parallel:
+  start_index :
+  end_index :
+
+data: # wall normal (y) and mean/std of y
+  y:
+  y_m_path: /path/to/mean_and_std_of_y.npy
+  y_std_path: /path/to/mean_and_std_of_y.npy
+
+meas: # measurements and measurement operator
+  meas_path:
+  need_noisy_meas: False
+  noise_scale: 0.
+  meas_model: "name_of_meas_model"
+  specific_kwargs: {"mask" : "/path/to/mask.npy", "other_args" :"/path/to/other/args/required/by/meas_model"}
+
+fm: # flow matching model hyperparameters used for the paper
+  exp: "prod"
+  epoch: 0
+  sigma: 1e-3
+  num_steps: 250
+  cond_scale: 1.0
+  dim: [3, 320, 200]
+  channel_mult: "1,  2,  4,  4"
+  num_channels: 128
+  res_blocks: 2
+  head_chans: 64
+  attn_res: "40"
+  dropout: 0.0
+  new_attn: True
+  film: True
+  class_cond: True
+  num_classes: 3
+
+swag: # swag model hyperparameters used for the paper
+  need_swag_model: True
+  reg_exp: "prod"
+  reg_iter: 99
+  var_clamp: 1e-6
+  rank: 5
+  dim: [3, 32, 32]
+  out_dim: 3
+  num_channels: 64
+  channel_mult: null
+  res_blocks: 2
+  head_chans: 64
+  attn_res: "64"
+  dropout: 0.0
+  new_attn: True
+  film: True
+
+gen: #
+  total_samples_each_cond: 50
+  save_path: /path/to/save/results.npy

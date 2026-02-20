@@ -1,0 +1,16 @@
+device : "cuda"
+
+data: # wall normal (y) and mean/std of y
+  y: 
+  y_std_path: /path/to/std_of_y.npy
+
+meas:
+  meas_path: /path/to/measurements.npy # can be preprocessed with classical interpolation algorithms
+  need_noisy_meas: False
+  noise_scale: 0.
+
+model: # load model and inference batch size (hyperparameters used for the paper)
+  epoch : 50
+  batch_size : 32
+
+save_path: /path/to/save/results.npy
