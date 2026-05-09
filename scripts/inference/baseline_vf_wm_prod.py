@@ -7,42 +7,50 @@ from tqdm import tqdm
 
 def main(config_path):
     config = OmegaConf.load(config_path)
-    
+
     # load info from config file
     y = config.data.y
-    y_std_path = config.data.y_std_path
-    
-    meas_path = config.meas.meas_path
+    wm_m_path = config.data.wm_m_path
+    wm_std_path = config.data.wm_std_path
+
     need_noisy_meas = config.meas.need_noisy_meas
     noise_scale = config.meas.noise_scale
-    
+
     epoch = config.model.epoch
     batch_size = config.model.batch_size
-    
+
     dev = config.device
-    
+
     # For conditioning on y^+
     wall_norm = {5: 0, 20: 1, 40: 2}
     assert y in wall_norm.keys(), "Check the y (wall normal) value provided"
-    
-    # load data
-    std = np.load(y_std_path)
-    
+
+    # load wall-measurement statistics (used to denormalize model output)
+    m = np.load(wm_m_path)
+    std = np.load(wm_std_path)
+
     # set device
     device = th.device(dev)
-    
-    # load normalized measurements
-    measurements = th.from_numpy(np.load(meas_path)).to(device).type(th.float32)
+
+    # load velocity-field normalization statistics (input)
+    m_ = np.load(f"data/stats/input/{y}/m.npy")
+    std_ = np.load(f"data/stats/input/{y}/std.npy")
+
+    # load and normalize velocity-field measurements (input to the network)
+    X = np.concatenate([np.load(f"data/input/channel_180_{vel}_y{y}_test.npy") for vel in ['u', 'v', 'w']], axis=1)[:5000:10]
+    X = (X - m_)/std_
+
+    measurements = th.from_numpy(X).to(device).type(th.float32)
     if need_noisy_meas:
         measurements += noise_scale * th.rand_like(measurements, device=device)
-    
+
     # load baseline model
     model = FCN()
     state = th.load(f"ckpt/checkpoint_{epoch}.pth", weights_only=True)
     model.load_state_dict(state["model_state_dict"])
     model.to(device)
     model.eval();
-    
+
     # Generate samples
     minibatches = measurements.shape[0]//batch_size
     samples = []
@@ -50,10 +58,9 @@ def main(config_path):
         with th.no_grad():
             sample = model(measurements[i * batch_size : (i + 1) * batch_size])
             samples.append(sample.detach().cpu().numpy())
-    
-    samples = np.concatenate(samples, axis=0) * std
+
+    samples = np.concatenate(samples, axis=0) * std + m
     np.save(config.save_path, samples)
-    
+
 if __name__=="__main__":
     main(sys.argv[1])
-    

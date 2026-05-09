@@ -35,6 +35,27 @@ To set up the environment, follow these steps:
     set -o allexport && source .env && set +o allexport
     ```
 
+## Data
+
+Inference scripts read inputs and statistics from a `data/` tree at the repository root. The directories are committed empty &mdash; **populate them before running inference**.
+
+```
+data/
+├── input/                # raw measurement arrays (per-component velocity-field test files)
+│   └── channel_180_{u,v,w}_y{Y}_test.npy
+├── output/               # script outputs are written here (save_path in the configs)
+└── stats/
+    ├── input/            # input normalization statistics, per wall-normal location
+    │   └── {Y}/
+    │       ├── m.npy
+    │       └── std.npy
+    └── output/           # output (wall-measurement) statistics for denormalization
+        ├── m.npy
+        └── std.npy
+```
+
+`{Y}` denotes the wall-normal location (e.g. `5`, `20`, `40`) selected via `data.y` in the inference config. Filenames in `data/input/` follow the `channel_180_{u,v,w}_y{Y}_test.npy` convention used by the `vf_wm` and `vf_fm` scripts.
+
 ## Usage
 
 Run scripts using the following syntax:
@@ -79,6 +100,16 @@ For training SWAG forward operator, used for conditional inference:
 -   **Baseline Inference:**
     ```bash
     python scripts/inference/baseline_prod.py scripts/inference/baseline.yml
+    ```
+
+-   **Baseline Inference (Velocity-Fluctuations $\rightarrow$ Wall-Measurement):**
+    ```bash
+    python scripts/inference/baseline_vf_wm_prod.py scripts/inference/baseline_vf_wm.yml
+    ```
+
+-   **SWAG Inference (Velocity-Fluctuations $\rightarrow$ Wall-Measurement):**
+    ```bash
+    python scripts/inference/ours_vf_fm_prod.py scripts/inference/ours_vf_fm.yml
     ```
 
 ## Issues

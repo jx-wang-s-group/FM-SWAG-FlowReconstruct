@@ -1,0 +1,30 @@
+device : "cuda"
+
+data: # wall normal (y) of input velocity; input stat paths are templated by y in the script
+  y: 20
+  wm_m_path: data/stats/output/m.npy
+  wm_std_path: data/stats/output/std.npy
+
+meas: # velocity-field measurements at wall-normal location y are loaded from y-templated paths in the script
+  need_noisy_meas: False
+  noise_scale: 0.
+
+model: # load model and inference hyperparameters (SWAG inference)
+  epoch : 50
+  batch_size : 10
+  swag_count : 5
+  var_clamp : 1.0e-6
+  rank : 5
+
+arch: # UNet architecture (must match the trained checkpoint)
+  dim : [3, 32, 32]
+  num_channels : 64
+  out_dim : 3
+  num_res_blocks : 2
+  num_head_channels : 64
+  attention_resolutions : "128" # no self-attention blocks except the middle block of the unet
+  dropout : 0.0
+  use_new_attention_order : True
+  use_scale_shift_norm : True
+
+save_path: data/output/test_ours_vf_fm_1

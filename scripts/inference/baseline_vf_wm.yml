@@ -1,0 +1,16 @@
+device : "cuda"
+
+data: # wall normal (y) of input velocity, mean/std of target wall measurements
+  y: 20
+  wm_m_path: data/stats/output/m.npy
+  wm_std_path: data/stats/output/std.npy
+
+meas: # velocity-field measurements at wall-normal location y are loaded from y-templated paths in the script
+  need_noisy_meas: False
+  noise_scale: 0.
+
+model: # load model and inference batch size (hyperparameters used for the paper)
+  epoch : 50
+  batch_size : 32
+
+save_path: data/output/test_baseline_vf_wm_1
